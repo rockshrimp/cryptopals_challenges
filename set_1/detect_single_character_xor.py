@@ -1,9 +1,10 @@
-from single_byte_xor import guess_single_char_xor
+from single_byte_xor import guess_single_char_xor, get_english_score
 
 if __name__ == '__main__':
     with open('4.txt', 'r') as f:
         lines = f.read().split('\n')
+
+        guesses = []
         for line in lines:
-            guesses = guess_single_char_xor(line)
-            if len(guesses) > 0:
-                print(guesses)
+            guesses.append(guess_single_char_xor(line))
+        print(sorted(guesses, key=lambda x: x['score'])[0])

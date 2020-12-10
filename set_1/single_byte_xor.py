@@ -1,50 +1,43 @@
 from fixed_xor import fixed_xor
-from langdetect import detect_langs
-
-valid_char_values = range(32, 129)
+from collections import Counter
 
 
-def single_byte_xor(char, hex_string):
-    if len(hex_string) % 2 == 1:
-        raise ValueError('cipher length is not a multiple of 2')
-    # For a hex string a byte is 2 characters
-    n_bytes = len(hex_string) // 2
-    return fixed_xor(hex_string, n_bytes * char)
+def single_byte_xor(value, hex_string):
+    s = bytes.fromhex(hex_string)
+    return ''.join([chr(value ^ byte) for byte in s])
 
 
-def is_english(s):
-    language, score = str(detect_langs(s)[0]).split(':')
+def get_english_score(s):
+    # English character frequencies
+    eng_letter_frequencies = {
+        'a': .08167, 'b': .01492, 'c': .02782, 'd': .04253,
+        'e': .12702, 'f': .02228, 'g': .02015, 'h': .06094,
+        'i': .06094, 'j': .00153, 'k': .00772, 'l': .04025,
+        'm': .02406, 'n': .06749, 'o': .07507, 'p': .01929,
+        'q': .00095, 'r': .05987, 's': .06327, 't': .09056,
+        'u': .02758, 'v': .00978, 'w': .02360, 'x': .00150,
+        'y': .01974, 'z': .00074, ' ': .18288
+    }
+    s_frequencies = Counter(s)
 
-    if language == 'en' and float(score) > 0.9:
-        for char in s:
-            # If we found non standars characters
-            if ord(char) not in valid_char_values:
-                return False
-        return True
-    else:
-        return False
+    score = 0
+    for letter in s_frequencies:
+        score += abs(s_frequencies[letter] / len(s) - eng_letter_frequencies.get(letter, 0))
+    return score
 
 
 def guess_single_char_xor(s):
     possible_guesses = []
-    for i in valid_char_values:
-        c = hex(i)[2:].zfill(2)
-        try:
-            guess = bytearray.fromhex(single_byte_xor(c, s)).decode()
-            if is_english(guess):
-                possible_guesses.append(guess)
-        # If there is a unicode decode error it means that the guess contains characters
-        # that couldn't be decoded, so it's surely not the right guess
-        except UnicodeDecodeError as e:
-            pass
-        except ValueError as e:
-            raise e
+    for i in range(256):
+        guess = single_byte_xor(i, s)
+        score = get_english_score(guess)
+        guess_entry = {'guess': guess,
+                       'score': score}
+        possible_guesses.append(guess_entry)
 
-    return possible_guesses
+    return sorted(possible_guesses, key=lambda x: x['score'])[0]
 
 
 if __name__ == '__main__':
     cipher = '1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736'
-    possibles_guesses = guess_single_char_xor(cipher)
-    for guess in possibles_guesses:
-        print(guess)
+    print(guess_single_char_xor(cipher))
