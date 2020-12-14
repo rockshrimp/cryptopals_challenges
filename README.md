@@ -2,7 +2,7 @@
 
 Solutions for the cryptopals challenges
 
-[Set 1](set_1)
+*[Set 1](set_1)
   *[Convert hex to base64](set_1/hex_to_base64.py)
   *[Fixed XOR](set_1/fixed_xor.py)
   *[Single-byte XOR cipher](set_1/single_byte_xor.py)
