@@ -1,4 +1,3 @@
-from fixed_xor import fixed_xor
 from collections import Counter
 
 

@@ -1,4 +1,4 @@
-from single_byte_xor import guess_single_char_xor, get_english_score
+from single_byte_xor import guess_single_char_xor
 
 if __name__ == '__main__':
     with open('4.txt', 'r') as f:
