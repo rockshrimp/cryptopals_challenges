@@ -1,6 +1,3 @@
-from hex_to_base64 import hex_to_b64
-
-
 def fixed_xor(s1, s2):
     return "".join([hex(int(x, 16) ^ int(y, 16))[2:] for (x, y) in zip(s1, s2)])
 
