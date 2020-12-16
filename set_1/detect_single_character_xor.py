@@ -6,5 +6,6 @@ if __name__ == '__main__':
 
         guesses = []
         for line in lines:
-            guesses.append(guess_single_char_xor(line))
+            guesses.append(guess_single_char_xor(bytes.fromhex(line)))
+
         print(sorted(guesses, key=lambda x: x['score'])[0])
