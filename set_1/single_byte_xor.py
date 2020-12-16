@@ -33,7 +33,8 @@ def guess_single_char_xor(s):
         guess = single_byte_xor(i, s)
         score = get_english_score(guess)
         guess_entry = {'guess': guess,
-                       'score': score}
+                       'score': score,
+                       'value': i}
         possible_guesses.append(guess_entry)
 
     return sorted(possible_guesses, key=lambda x: x['score'])[0]
